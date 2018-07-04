@@ -2,10 +2,24 @@ require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
 require './spec/features/web_helpers.rb'
+require_relative './setup_test_database'
+
+
+# require_relative './setup_test_database'
+
 
 require File.join(File.dirname(__FILE__), '..', 'app.rb')
 
 ENV['RACK_ENV'] = 'test'
+ENV['ENVIRONMENT'] = 'test'
+
+RSpec.configure do |config|
+  config.before(:each) do
+    setup_test_database!
+  end
+end
+
+
 
 Capybara.app = BookmarkManager
 
@@ -112,4 +126,6 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+
 end
