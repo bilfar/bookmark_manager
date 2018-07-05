@@ -1,9 +1,22 @@
+<%= styled_flash %>
+
 <ul>
   <% @bookmarks.each do |bookmark| %>
-    <li>
-      <a href="<%= bookmark.url %>">
+    <li id="bookmark-<%= bookmark.id %>">
+      <a href="<%= bookmark.url %>" target="_blank">
         <%= bookmark.title %>
       </a>
+      <a href="/bookmarks/<%= bookmark.id %>/comments/new">
+        Comment
+      </a>
+      <form action="/bookmarks/<%= bookmark.id %>/delete" method="post">
+        <input type="submit" value="Delete" />
+      </form>
+      <ul>
+        <% bookmark.comments.each do |comment| %>
+          <li><%= comment.text %></li>
+        <% end %>
+      </ul>
     </li>
   <% end %>
 </ul>

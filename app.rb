@@ -1,6 +1,7 @@
 require 'sinatra/base'
-require './lib/bookmark'
 require 'sinatra/flash'
+require './lib/bookmark'
+require './lib/comment'
 require 'uri'
 # require './database_connection_setup'
 
@@ -8,9 +9,14 @@ class BookmarkManager < Sinatra::Base
   enable :sessions
   register Sinatra::Flash
 
+
+  get '/' do
+    redirect('/bookmarks')
+  end
+
   get '/bookmarks' do
     @bookmarks = Bookmark.all
-    erb :index
+    erb :"bookmarks/index"
   end
 
   get '/bookmarks/new' do
@@ -18,13 +24,16 @@ class BookmarkManager < Sinatra::Base
   end
 
   post '/bookmarks' do
-    flash[:notice] = "You must submit a valid URL." unless Bookmark.create(url: params['url'])
+    bookmark = Bookmark.create(url: params['url'], title: prams['title'])
+
+    flash[:notice] = "You must submit a valid URL." unless bookmark
     redirect('/bookmarks')
   end
 
-  delete '/bookmarks/:id/delete' do
+
+  post '/bookmarks/:id/delete' do
     Bookmark.delete(params['id'])
-    redirect '/'
+    redirect '/bookmarks'
   end
 
   get '/bookmarks/:id/edit' do
@@ -33,18 +42,21 @@ class BookmarkManager < Sinatra::Base
   end
 
 
-
-  get '/bookmarks/:id' do
-    @bookmark_id = params['id']
-    erb :"bookmarks/edit"
+  post '/bookmarks/:id/update' do
+    Bookmark(update(params['id'], params))
+    redirect('/')
   end
 
 
-patch '/bookmarks/:id' do
-  Bookmark.update(params['id'], params)
-  redirect('/bookmarks')
-end
+  get '/bookmarks/:id/comments/new' do
+    @bookmark = Bookmark.find(params['id'])
+    erb :"comments/new"
+  end
 
+    post '/bookmarks/:id/comments' do
+      comment = Comment.create(bookmark_id: params['id'], text: params['text'])
+      redirect('/bookmarks')
+    end
 
   run! if app_file == $0
 
