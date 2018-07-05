@@ -4,14 +4,7 @@ require 'pg'
    p "Cleaning database..."
 
    connection = PG.connect(dbname: 'bookmark_manager_test')
-
-   # Clear the database
-   connection.exec("TRUNCATE comments, bookmarks;")
-
-   # Add the test data
-   connection.exec("INSERT INTO bookmarks VALUES(1, 'http://www.makersacademy.com', 'Makers Academy');")
-   connection.exec("INSERT INTO bookmarks VALUES(2, 'http://www.google.com', 'Google');")
-   connection.exec("INSERT INTO bookmarks VALUES(3, 'http://www.facebook.com', 'Facebook');")
+   connection.exec("TRUNCATE comments, bookmarks, users;")
  end
 
  task :setup do
@@ -27,10 +20,16 @@ require 'pg'
 end
 
   task :teardown do
-  p "Tearing down databases..."
+    p "Destroying databases...type 'y' to confirm that you want to destroy the Bookmark Manager databases. This will remove all data in those databases!"
+
+    confirm = STDIN.gets.chomp
+
+    return unless confirm == 'y'
+
+
 
   ['bookmark_manager', 'bookmark_manager_test'].each do |database|
     connection = PG.connect
-    connection.exec("DROP DATABASE #{ database };")
+    connection.exec("DROP DATABASE #{ database }")
    end
  end
