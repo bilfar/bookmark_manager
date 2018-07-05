@@ -15,6 +15,11 @@ So I can store bookmark data for later retrieval
 I want to add a bookmark to Bookmark Manager
 
 User story 3
-as a user
-so i can remove bookmark data that i don't need anymore
-I want to delete a bookmark to Bookmark Manager
+As a user
+So I can remove my bookmark from Bookmark Manager
+I want to delete a bookmark
+
+User story 3
+As a user
+So I can change a bookmark in Bookmark Manager
+I want to update a bookmark
